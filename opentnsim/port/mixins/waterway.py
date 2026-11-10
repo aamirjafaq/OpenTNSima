@@ -54,19 +54,13 @@ class WaterwayTraversable(Movable, Identifiable, VesselProperties):
             return
 
         # if vessel has made a request but not for the found waterway -> error (should not happen)
-        if hasattr(self, 'waterway_request') and self.waterway_request.waterway == waterway:
-            raise ValueError(
-                f"Vessel ({self.id}) did not request access to the correct waterway while accessing waterway ({waterway.name})."
-            )
-        # if vessel has already made a request for a waterway
         if hasattr(self, 'waterway_request'):
-            # if this is the waterway in question -> do nothing (return)
-            if self.waterway_request.waterway == waterway:
+            waterway_request = self.waterway_request
+            if waterway_request.waterway == waterway:
                 return
-            # else it is another waterway -> error (should not happen)
             else:
                 raise ValueError(
-                    f"Vessel ({self.id}) did not request access for waterway ({waterway.name}) but another waterway."
+                    f"Vessel ({self.id}) did not request access to the correct waterway while accessing waterway ({waterway.name})."
                 )
 
         # create waterway request
@@ -122,7 +116,7 @@ class WaterwayTraversable(Movable, Identifiable, VesselProperties):
         # vessel request not in users -> error (should not be possible)
         if self.waterway_request not in waterway.resource.users:
             raise ValueError(
-                f"Vessel ({self.id}) did not request access to waterway ({waterway.name}) while leaving it."
+                f"Vessel ({self.id}) did not request access for waterway ({waterway.name}) but another waterway."
             )
 
 
